@@ -1,1 +1,11 @@
+//we have to make use of array16 library file 
+// code to interface the arduino
+//define cell voltage limit(threshold value)
+//set the baudrate
+//define thermistor values(thermistor ambient values)
+//code to signify overvoltage and undervoltage
+//array or vector to hold chip configuration words
+// array to hold data read from IC
+//cell balancing
+// we have to create delay
 
