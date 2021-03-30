@@ -11,3 +11,12 @@
 // Variables [voltages of individual cells = e1, e2, e3, e4]
 // Thresholds for volatge [low_volt and up_volt]
 // Thresholds for temperature [low_temp and up_temp]
+void setup() {
+  // put your setup code here, to run once:
+
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+
+}
