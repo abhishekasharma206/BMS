@@ -9,6 +9,7 @@ float voltage_instantaneous;
 float temp_instantaneous;
 int master_cutoff_pin;
 int direction_current;
+float cellVoltages[99];
 }
 
 void loop() {
