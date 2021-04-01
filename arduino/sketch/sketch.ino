@@ -4,9 +4,10 @@ int total_cells = 4;
 
 void voltage_sensing() {
   // sensing voltage of each cell
+  int i = 0;
   for (int pin=97; pin>97-total_cells; pin--)
   {
-    static int i = 0;
+    int i = 0;
     voltages[i++] = analogRead(pin);
   }
 }
