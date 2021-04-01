@@ -1,13 +1,28 @@
 #include <ArduinoSTL.h>
-std::vector <float> voltages;
-int total_cells = 4;
 
+std::vector <float> voltages;
+
+const int total_cells = 4;
+
+//Variables for current Sensing
+const int adcVoltage_pin = 91; //Pin number for current sensing
+int sensetivity = 185; //As per datasheet of ACS712 for range of 5A
+int adcValue = 0;
+int offsetVoltage = 2500; //(mV) Offset Voltage is Vcc/2. Assuming 5V supply is given through Arduino board.
+double current = 0; 
+double voltage = 0;
+
+double current_sensing(){
+  // senses the current of the battery pack
+  adcValue = analogRead(adcVoltage_pin);
+  voltage = (adcValue / 1024.0) * 5000; //converts digital value to mV
+  return ((voltage - offsetVoltage)/sensetivity); //returns the current sensed
+}
 void voltage_sensing() {
   // sensing voltage of each cell
   int i = 0;
   for (int pin=97; pin>97-total_cells; pin--)
   {
-    int i = 0;
     voltages[i++] = analogRead(pin);
   }
 }
@@ -29,4 +44,5 @@ float cellVoltages[99];
 void loop() {
   // put your main code here, to run repeatedly:
   voltage_sensing();
+  current = current_sensing();
 }
