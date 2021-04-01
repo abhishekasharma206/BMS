@@ -1,7 +1,16 @@
+// all variables defined 
+// Temperature sensing function called
+// current sensing function called
+// voltage sensing function called
+
+
+
+
+
+
 #include <ArduinoSTL.h>
 
 std::vector <float> voltages;
-
 const int total_cells = 4;
 
 //Variables for current Sensing
@@ -19,8 +28,8 @@ double temp;
 
 void Temperature_sense(){
   int cell = 0;
-  for(int tempPin = 90 ; tempPin > 90-total_cells ; tempPin--){   // maximum 7 cells
-  temp_sense[cell] = analogRead(tempPin);// read analog volt from sensor and save to variable temp
+  for(int tempPin = 90 ; tempPin > 90-total_cells ; tempPin--){   // for maximum 6 cells
+  temp_sense[cell] = analogRead(tempPin);// read analog volt from sensor and save to vector temp_sense
    temp_sense[cell] *= 0.48828125;  // convert the analog volt to its temperature equivalent
                              // for LM35 IC we have to multiply temperature with 0.48828125
    cell++;
@@ -35,7 +44,7 @@ double current_sensing(){
 void voltage_sensing() {
   // sensing voltage of each cell
   int i = 0;
-  for (int pin=97; pin>97-total_cells; pin--)
+  for (int pin=97; pin>97-total_cells; pin--)               // for maximum 6 cells
   {
     voltages[i++] = analogRead(pin);
   }
@@ -60,4 +69,5 @@ void loop() {
   // put your main code here, to run repeatedly:
   voltage_sensing();
   current = current_sensing();
+Temperature_sense();
 }
