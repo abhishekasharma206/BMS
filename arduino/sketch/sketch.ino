@@ -3,7 +3,7 @@ std::vector <float> voltages;
 int total_cells = 4;
 
 void voltage_sensing() {
-  // sensing voltage, comapring them with each other and with thresholds
+  // sensing voltage of each cell
   for (int pin=97; pin>97-total_cells; pin--)
   {
     static int i = 0;
