@@ -46,7 +46,8 @@ void voltage_sensing() {
   int i = 0;
   for (int pin=97; pin>97-total_cells; pin--)               // for maximum 6 cells
   {
-    voltages[i++] = analogRead(pin);
+
+    voltages[i++] = analogRead(pin);                   //  values inserted in vector
   }
 }
 
