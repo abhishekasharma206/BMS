@@ -40,7 +40,38 @@ Connect Vout to Analog0 or A0 on Arduino board.
 Connect GND with GND on Arduino.
 
 The Analog to Digital Converter (ADC) converts analog values into a digital approximation based on the formula ADC Value = sample * 1024 / reference voltage (+5v).
-So with a +5 volt reference, the digital approximation will be equal to input voltage * 205.   */                                                                 
+So with a +5 volt reference, the digital approximation will be equal to input voltage * 205.   */   
+
+void Thermal_management(){
+  // opens the relay contacts if the temperature is not within the permissible limits
+  bool charge;
+  int pinout = 78;
+  for (int i=0; i<total_cells; i++)
+  {
+    if (charge == TRUE)
+    {
+      if (temp<0 || temp>45)
+      {
+        digitalWrite(pinout, LOW);
+      }
+      else
+      {
+        digitalWrite(pinout, HIGH);
+      }
+    }
+    else
+    {
+      if (temp<0 || temp>55)
+      {
+        digitalWrite(pinout, LOW);
+      }
+      else
+      {
+        digitalWrite(pinout, HIGH);
+      }
+    }
+  }
+}                                                              
                          
 double current_sensing(){
   // senses the current of the battery pack
@@ -73,5 +104,6 @@ void loop() {
   // put your main code here, to run repeatedly:
   voltage_sensing();
   current = current_sensing();
-Temperature_sense();
+  Temperature_sense();
+  Thermal_management();
 }
