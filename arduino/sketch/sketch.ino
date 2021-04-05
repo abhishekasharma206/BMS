@@ -1,3 +1,38 @@
+// all variables defined 
+// Temperature sensing function called
+// current sensing function called
+// voltage sensing function called
+
+
+
+
+#include<Vector.h>
+#include<Pair.h>
+#include<Arduino.h>
+#include<ArduinoSTL.h>
+
+Vector<Pair<double,int>> voltages;
+typedef Pair<double,int> volt_measurement;
+const int total_cells = 4;
+
+//Variables for current Sensing
+const int adcVoltage_pin = 91; //Pin number for current sensing
+int sensetivity = 185; //As per datasheet of ACS712 for range of 5A
+int adcValue = 0;
+int offsetVoltage = 2500; //(mV) Offset Voltage is Vcc/2. Assuming 5V supply is given through Arduino board.
+double current = 0; 
+double voltage = 0;
+
+//Variables for Temperature sensing
+Vector<Pair<double,int>> temp_sense;
+typedef Pair<double,int> temp_measurement;
+double temp;
+
+
+void Temperature_sense(){
+  int cell = 0;
+  for(int tempPin = 90 ; tempPin > 90-total_cells ; tempPin--){             // for maximum 6 cells
+   temp_measurement m(analogRead(tempPin)*0.48828125,tempPin);
     temp_sense.push_back(m);                   // read analog volt from sensor and save to vector temp_sense
 }                                                                            // convert the analog volt to its temperature equivalent  
 }                                                                             // for LM35 IC we have to multiply temperature with 0.48828125
@@ -38,10 +73,6 @@ Serial.begin(9600);
 void loop() {
   // put your main code here, to run repeatedly:
   voltage_sensing();
-  current = current_sensing();
-Temperature_sense();
-}
-
   current = current_sensing();
 Temperature_sense();
 }
