@@ -7,7 +7,7 @@
 
 
 
-
+#include <Arduino.h>
 #include <ArduinoSTL.h>
 
 std::vector <float> voltages;
@@ -55,9 +55,13 @@ void voltage_sensing() {
 
   for (int pin=97; pin>97-total_cells; pin--)               // for maximum 6 cells
   {
-    voltages.push_back(analogRead(pin));
+    voltages.push_back(analogRead(pin)*5/1024);
   }
 }
+/* For voltage sensing voltage sensing module is used (VCC<25)
+ *  It has 5 pins, VCC - positive terminal to be measured, GND - negative terminal to be measured
+ *  S - Analog input to Arduino, +ve - Not Conncted, -ve pin - GND of Arduino
+ */
 
 void setup() {
 Serial.begin(9600);
