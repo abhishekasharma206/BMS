@@ -71,7 +71,13 @@ void Thermal_management(){
       }
     }
   }
-}                                                              
+}     
+/*A 5V relay module is used                                                         
+ *  The cells are connected between NC and Common pin.                                                        
+ *  Ground: Connects to the ground pin on the Arduino
+    5V Vcc: Connects the Arduino’s 5V pin
+    Signal: Carries the trigger signal from the Arduino that activates the relay
+ */ 
                          
 double current_sensing(){
   // senses the current of the battery pack
