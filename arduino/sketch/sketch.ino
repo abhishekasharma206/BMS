@@ -41,8 +41,7 @@ Connect GND with GND on Arduino.
 
 The Analog to Digital Converter (ADC) converts analog values into a digital approximation based on the formula ADC Value = sample * 1024 / reference voltage (+5v).
 So with a +5 volt reference, the digital approximation will be equal to input voltage * 205.   */                                                                 
-                                                                         
-
+                         
 double current_sensing(){
   // senses the current of the battery pack
   adcValue = analogRead(adcVoltage_pin);
