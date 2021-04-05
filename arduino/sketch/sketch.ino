@@ -28,41 +28,42 @@ double temp;
 
 void Temperature_sense(){
   int cell = 0;
-  for(int tempPin = 90 ; tempPin > 90-total_cells ; tempPin--){   // for maximum 6 cells
-  temp_sense[cell] = analogRead(tempPin);// read analog volt from sensor and save to vector temp_sense
-   temp_sense[cell] *= 0.48828125;  // convert the analog volt to its temperature equivalent
-                             // for LM35 IC we have to multiply temperature with 0.48828125
-   cell++;
-}
-}
+  for(int tempPin = 90 ; tempPin > 90-total_cells ; tempPin--)             // for maximum 6 cells
+    temp_sense.push_back(analogRead(tempPin)*0.48828125);                   // read analog volt from sensor and save to vector temp_sense
+}                                                                            // convert the analog volt to its temperature equivalent  
+                                                                             // for LM35 IC we have to multiply temperature with 0.48828125
+
+   /*LM35 sensor has three terminals - Vs, Vout and GND. We will connect the sensor as follows −
+
+Connect the +Vs to +5v on your Arduino board.
+Connect Vout to Analog0 or A0 on Arduino board.
+Connect GND with GND on Arduino.
+
+The Analog to Digital Converter (ADC) converts analog values into a digital approximation based on the formula ADC Value = sample * 1024 / reference voltage (+5v).
+So with a +5 volt reference, the digital approximation will be equal to input voltage * 205.   */                                                                 
+                                                                         
+
 double current_sensing(){
   // senses the current of the battery pack
   adcValue = analogRead(adcVoltage_pin);
   voltage = (adcValue / 1024.0) * 5000; //converts digital value to mV
   return ((voltage - offsetVoltage)/sensetivity); //returns the current sensed
 }
+
+
 void voltage_sensing() {
   // sensing voltage of each cell
-  int i = 0;
+
   for (int pin=97; pin>97-total_cells; pin--)               // for maximum 6 cells
   {
-    voltages[i++] = analogRead(pin);
+    voltages.push_back(analogRead(pin));
   }
 }
 
 void setup() {
-serial.begin(9600);
+Serial.begin(9600);
   // put your setup code here, to run once:
-float min_temp; //Re-edit later with #define
-float max_temp; //Re-edit later with #define
-float max_voltage; //Re-edit later with #define
-float min_voltage; //Re-edit later with #define
-float current_instantaneous;
-float voltage_instantaneous;
-float temp_instantaneous;
-int master_cutoff_pin;
-int direction_current;
-float cellVoltages[99];
+
 }
 
 void loop() {
