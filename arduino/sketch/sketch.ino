@@ -6,11 +6,13 @@
 
 
 
+#include<Vector.h>
+#include<Pair.h>
+#include<Arduino.h>
+#include<ArduinoSTL.h>
 
-
-#include <ArduinoSTL.h>
-
-std::vector <float> voltages;
+Vector<Pair<double,int>> voltages;
+typedef Pair<double,int> volt_measurement;
 const int total_cells = 4;
 
 //Variables for current Sensing
@@ -22,17 +24,18 @@ double current = 0;
 double voltage = 0;
 
 //Variables for Temperature sensing
-std::vector<float> temp_sense;
+Vector<Pair<double,int>> temp_sense;
+typedef Pair<double,int> temp_measurement;
 double temp;
 
 
 void Temperature_sense(){
   int cell = 0;
-  for(int tempPin = 90 ; tempPin > 90-total_cells ; tempPin--)             // for maximum 6 cells
-    temp_sense.push_back(analogRead(tempPin)*0.48828125);                   // read analog volt from sensor and save to vector temp_sense
+  for(int tempPin = 90 ; tempPin > 90-total_cells ; tempPin--){             // for maximum 6 cells
+   temp_measurement m(analogRead(tempPin)*0.48828125,tempPin);
+    temp_sense.push_back(m);                   // read analog volt from sensor and save to vector temp_sense
 }                                                                            // convert the analog volt to its temperature equivalent  
-                                                                             // for LM35 IC we have to multiply temperature with 0.48828125
-
+}                                                                             // for LM35 IC we have to multiply temperature with 0.48828125
    /*LM35 sensor has three terminals - Vs, Vout and GND. We will connect the sensor as follows −
 
 Connect the +Vs to +5v on your Arduino board.
@@ -56,7 +59,8 @@ void voltage_sensing() {
 
   for (int pin=97; pin>97-total_cells; pin--)               // for maximum 6 cells
   {
-    voltages.push_back(analogRead(pin));
+    volt_measurement m(analogRead(pin)*(5/1024),pin);
+    voltages.push_back(m);
   }
 }
 
