@@ -44,11 +44,11 @@ So with a +5 volt reference, the digital approximation will be equal to input vo
 
 void Thermal_management(){
   // opens the relay contacts if the temperature is not within the permissible limits
-  bool charge;
   int pinout = 78;
+  bool charge = direction_of_flow_of_current();
   for (int i=0; i<total_cells; i++)
   {
-    if (charge == TRUE)
+    if (charge = TRUE)
     {
       if (temp<0 || temp>45)
       {
