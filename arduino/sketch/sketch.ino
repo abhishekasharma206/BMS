@@ -1,4 +1,4 @@
-#include<vector.h>
+#include<Vector.h>
 #include<Pair.h>
 #include<Arduino.h>
 #include<ArduinoSTL.h>
@@ -93,9 +93,9 @@ bool direction_of_flow_of_current()
   bool charge = direction_of_flow_of_current();
   for (int i=0; i<total_cells; i++)
   {
-    if (charge = TRUE)
+    if (charge == true)
     {
-      if (temp_sense[i].first<0 || temp_sense[i].first>45)
+      if ((temp_sense[i].first<0) || (temp_sense[i].first>45))
       {
         digitalWrite(pinout, LOW);
       }
@@ -106,7 +106,7 @@ bool direction_of_flow_of_current()
     }
     else
     {
-      if (temp_sense[i].first<0 || temp_sense[i].first>55)
+      if ((temp_sense[i].first<0) || (temp_sense[i].first>55))
       {
         digitalWrite(pinout, LOW);
       }
