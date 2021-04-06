@@ -95,7 +95,7 @@ bool direction_of_flow_of_current()
   {
     if (charge == true)
     {
-      if ((temp_sense[i].first<0) || (temp_sense[i].first>45))
+      if ((temp_sense[i].val_1<0) || (temp_sense[i].val_1>45))
       {
         digitalWrite(pinout, LOW);
       }
@@ -106,7 +106,7 @@ bool direction_of_flow_of_current()
     }
     else
     {
-      if ((temp_sense[i].first<0) || (temp_sense[i].first>55))
+      if ((temp_sense[i].val_1<0) || (temp_sense[i].val_1>55))
       {
         digitalWrite(pinout, LOW);
       }
