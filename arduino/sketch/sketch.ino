@@ -94,16 +94,16 @@ bool direction_of_flow_of_current()
     if (charge == true)
     {
       if ((temp_sense[i].val_1) <= 0.000 || (temp_sense[i].val_1) >= 45.000)
-        digitalWrite(pinout, LOW);
-      else
         digitalWrite(pinout, HIGH);
+      else
+        digitalWrite(pinout, LOW);
     }
     else
     {
       if ((temp_sense[i].val_1) <= 0.000 || (temp_sense[i].val_1) >= 55.000)
-        digitalWrite(pinout, LOW);
-      else
         digitalWrite(pinout, HIGH);
+      else
+        digitalWrite(pinout, LOW);
     }
   }
 }     
