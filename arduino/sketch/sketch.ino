@@ -124,6 +124,7 @@ void loop() {
   // put your main code here, to run repeatedly:
   voltage_sensing();
   current = current_sensing();
-Temperature_sense();
+ Temperature_sense();
   Thermal_management();
+  cell_balancing();
 }
