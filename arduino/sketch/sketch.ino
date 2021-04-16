@@ -2,10 +2,12 @@
 #include<Pair.h>
 #include<Arduino.h>
 #include<ArduinoSTL.h>
-
+//voltage sensing variable
 Vector<Pair<double,int>> voltages;
 typedef Pair<double,int> volt_measurement;
-const int total_cells = 4;
+const int series_cells = 3;
+const int parallel_cells = 3;
+const int total_cells = series_cells * parallel_cells;
 
 //Variables for current Sensing
 const int adcVoltage_pin = 91; //Pin number for current sensing
@@ -20,12 +22,10 @@ Vector<Pair<double,int>> temp_sense;
 typedef Pair<double,int> temp_measurement;
 double temp;
 
-//variables for master cut-off
-const int relayPin = 22;
 
 void Temperature_sense(){
   int cell = 0;
-  for(int tempPin = 90 ; tempPin > 90-total_cells ; tempPin--)
+  for(int tempPin = 90 ; tempPin > 90-series_cells ; tempPin--)
   {             // for maximum 6 cells
    temp_measurement m(analogRead(tempPin)*0.48828125,tempPin);
     temp_sense.push_back(m);                   // read analog volt from sensor and save to vector temp_sense
@@ -52,19 +52,19 @@ void voltage_sensing()
 {
   // sensing voltage of each cell
 
-  for (int pin=97; pin > 97-total_cells; pin--)               // for maximum 6 cells
+  for (int pin=97; pin > 97-series_cells; pin--)               // for maximum 6 cells
   {
     volt_measurement m(analogRead(pin)*(5/1024),pin);
     voltages.push_back(m);
   }
 }
 //turn on the relay
-void turnOn()
+void turnOn(int relayPin)
 {
   digitalWrite(relayPin, HIGH);//normally open
 }
 // turn off the relay
-void turnOff()
+void turnOff(int relayPin)
 {
   digitalWrite(relayPin, LOW);//normally close
 }
@@ -89,21 +89,21 @@ bool direction_of_flow_of_current()
   // opens the relay contacts if the temperature is not within the permissible limits
   int pinout = 78;
   bool charge = direction_of_flow_of_current();
-  for (int i=0; i<total_cells; i++)
+  for (int i=0; i<series_cells; i++)
   {
     if (charge == true)
     {
       if ((temp_sense[i].val_1) <= 0.000 || (temp_sense[i].val_1) >= 45.000)
-        digitalWrite(pinout, HIGH);
+        digitalWrite(pinout, HIGH); // turnOn(pinout)
       else
-        digitalWrite(pinout, LOW);
+        digitalWrite(pinout, LOW);  //turnoff(pinout)
     }
     else
     {
       if ((temp_sense[i].val_1) <= 0.000 || (temp_sense[i].val_1) >= 55.000)
-        digitalWrite(pinout, HIGH);
+        digitalWrite(pinout, HIGH);   //turnOn(pinout)
       else
-        digitalWrite(pinout, LOW);
+        digitalWrite(pinout, LOW);    //turnoff(pinout)
     }
   }
 }     
