@@ -1,17 +1,13 @@
-// all variables defined 
-// Temperature sensing function called
-// current sensing function called
-// voltage sensing function called
-
-
-
-
-
-
-#include <ArduinoSTL.h>
-
-std::vector <float> voltages;
-const int total_cells = 4;
+#include<Vector.h>
+#include<Pair.h>
+#include<Arduino.h>
+#include<ArduinoSTL.h>
+//voltage sensing variable
+Vector<Pair<double,int>> voltages;
+typedef Pair<double,int> volt_measurement;
+const int series_cells = 3;
+const int parallel_cells = 3;
+const int total_cells = series_cells * parallel_cells;
 
 //Variables for current Sensing
 const int adcVoltage_pin = 91; //Pin number for current sensing
@@ -22,53 +18,113 @@ double current = 0;
 double voltage = 0;
 
 //Variables for Temperature sensing
-std::vector<float> temp_sense;
+Vector<Pair<double,int>> temp_sense;
+typedef Pair<double,int> temp_measurement;
 double temp;
 
 
 void Temperature_sense(){
   int cell = 0;
-  for(int tempPin = 90 ; tempPin > 90-total_cells ; tempPin--){   // for maximum 6 cells
-  temp_sense[cell] = analogRead(tempPin);// read analog volt from sensor and save to vector temp_sense
-   temp_sense[cell] *= 0.48828125;  // convert the analog volt to its temperature equivalent
-                             // for LM35 IC we have to multiply temperature with 0.48828125
-   cell++;
-}
-}
-double current_sensing(){
+  for(int tempPin = 90 ; tempPin > 90-series_cells ; tempPin--)
+  {             // for maximum 6 cells
+   temp_measurement m(analogRead(tempPin)*0.48828125,tempPin);
+    temp_sense.push_back(m);                   // read analog volt from sensor and save to vector temp_sense
+}                                                                            // convert the analog volt to its temperature equivalent  
+}                                                                             // for LM35 IC we have to multiply temperature with 0.48828125
+   /*LM35 sensor has three terminals - Vs, Vout and GND. We will connect the sensor as follows −
+Connect the +Vs to +5v on your Arduino board.
+Connect Vout to Analog0 or A0 on Arduino board.
+Connect GND with GND on Arduino.
+The Analog to Digital Converter (ADC) converts analog values into a digital approximation based on the formula ADC Value = sample * 1024 / reference voltage (+5v).
+So with a +5 volt reference, the digital approximation will be equal to input voltage * 205.   */                                                                 
+                                                                         
+
+double current_sensing()
+{
   // senses the current of the battery pack
   adcValue = analogRead(adcVoltage_pin);
   voltage = (adcValue / 1024.0) * 5000; //converts digital value to mV
   return ((voltage - offsetVoltage)/sensetivity); //returns the current sensed
 }
-void voltage_sensing() {
-  // sensing voltage of each cell
-  int i = 0;
-  for (int pin=97; pin>97-total_cells; pin--)               // for maximum 6 cells
-  {
 
-    voltages[i++] = analogRead(pin);                   //  values inserted in vector
+
+void voltage_sensing() 
+{
+  // sensing voltage of each cell
+
+  for (int pin=97; pin > 97-series_cells; pin--)               // for maximum 6 cells
+  {
+    volt_measurement m(analogRead(pin)*(5/1024),pin);
+    voltages.push_back(m);
   }
 }
+//turn on the relay
+void turnOn(int relayPin)
+{
+  digitalWrite(relayPin, HIGH);//normally open
+}
+// turn off the relay
+void turnOff(int relayPin)
+{
+  digitalWrite(relayPin, LOW);//normally close
+}
+
+
+
+//charging-discharging
+bool direction_of_flow_of_current()
+{
+  double current=current_sensing();
+  if(current>0)
+  {
+    return 1;
+  }
+  else
+  { 
+    return 0;
+  } 
+}
+
+ void Thermal_management(){
+  // opens the relay contacts if the temperature is not within the permissible limits
+  int pinout = 78;
+  bool charge = direction_of_flow_of_current();
+  for (int i=0; i<series_cells; i++)
+  {
+    if (charge == true)
+    {
+      if ((temp_sense[i].val_1) <= 0.000 || (temp_sense[i].val_1) >= 45.000)
+        digitalWrite(pinout, HIGH); // turnOn(pinout)
+      else
+        digitalWrite(pinout, LOW);  //turnoff(pinout)
+    }
+    else
+    {
+      if ((temp_sense[i].val_1) <= 0.000 || (temp_sense[i].val_1) >= 55.000)
+        digitalWrite(pinout, HIGH);   //turnOn(pinout)
+      else
+        digitalWrite(pinout, LOW);    //turnoff(pinout)
+    }
+  }
+}     
+/*A 5V relay module is used                                                         
+ *  The cells are connected between NC and Common pin.                                                        
+ *  Ground: Connects to the ground pin on the Arduino
+    5V Vcc: Connects the Arduino’s 5V pin
+    Signal: Carries the trigger signal from the Arduino that activates the relay
+ */
 
 void setup() {
-serial.begin(9600);
+Serial.begin(9600);
   // put your setup code here, to run once:
-float min_temp; //Re-edit later with #define
-float max_temp; //Re-edit later with #define
-float max_voltage; //Re-edit later with #define
-float min_voltage; //Re-edit later with #define
-float current_instantaneous;
-float voltage_instantaneous;
-float temp_instantaneous;
-int master_cutoff_pin;
-int direction_current;
-float cellVoltages[99];
+
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
   voltage_sensing();
   current = current_sensing();
-Temperature_sense();
+ Temperature_sense();
+  Thermal_management();
+  cell_balancing();
 }
