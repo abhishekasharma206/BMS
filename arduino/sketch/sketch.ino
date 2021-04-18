@@ -4,7 +4,7 @@
 #include<ArduinoSTL.h>
 
 //select line multiplexer variables
-vector<int> select_line_pins = {93,92,91,90};
+vector<int> select_line_pins = {75,74,73,72};
 const int current_function_output = 89;       //Pin number for current sensing
 const int temp_function_output = 84;          //Pin number for temperature sensing
 
@@ -41,6 +41,22 @@ void select_Multiplexer_Pin(byte pin)
   }
 }
 
+double total_current_sensing()
+{
+  // senses the overall current of the battery pack
+  int adcVoltagepin = 88;
+  double adcValue = analogRead(adcVoltage_pin);
+  cellcurrent = (adcValue / 1024.0) * 5000; //converts digital value to mV
+  return ((cellcurrent - offsetVoltage)/sensetivity); //returns the current sensed
+}
+
+double total_voltage_sensing()
+{
+  // senses the overall voltage of the battery pack
+  int totvolpin = 94;
+  double totalVol = (analogRead(totvolpin))*(5/1024);
+  return totalVol;
+}
 
 void Temperature_sense(){
   for(int tempPin = 0 ; tempPin <total_cells) ; tempPin++){
@@ -100,7 +116,7 @@ void turnOff(int relayPin)
 //charging-discharging
 bool direction_of_flow_of_current()
 {
-  double current=current_sensing();
+  double current=total_current_sensing();
   if(current>0)
   {
     return 1;
@@ -139,7 +155,11 @@ bool direction_of_flow_of_current()
     5V Vcc: Connects the Arduino’s 5V pin
     Signal: Carries the trigger signal from the Arduino that activates the relay
  */
-
+void over_current()
+{
+  //Over Current protection
+  
+}
 void setup() {
 Serial.begin(9600);
 
@@ -157,7 +177,11 @@ void loop() {
   // put your main code here, to run repeatedly:
   voltage_sensing();
   current_sensing();
- Temperature_sense();
+  total_current_sensing();
+  total_voltage_sensing();
+  Temperature_sense();
   Thermal_management();
+  over_current();
   cell_balancing();
+  direction_of_flow_of_current();
 }
