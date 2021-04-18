@@ -52,7 +52,7 @@ void voltage_sensing()
 {
   // sensing voltage of each cell
 
-  for (int pin=97; pin > 97-series_cells; pin--)               // for maximum 6 cells
+  for (int pin=97; pin > 97-series_cells; pin--)               
   {
     volt_measurement m(analogRead(pin)*(5/1024),pin);
     voltages.push_back(m);
