@@ -58,8 +58,7 @@ double total_voltage_sensing()
 
 void Temperature_sense()
 {
-	for (int tempPin = 0; tempPin < total_cells);
-	tempPin++)
+	for (int tempPin = 0; tempPin < total_cells;tempPin++)
 {
 	select_Multiplexer_Pin(tempPin);
 	delay(5);
