@@ -159,7 +159,16 @@ void Thermal_management()
 void over_current()
 {
 	//Over Current protection
+ cellcurrent = total_current_sensing();
+ relayPin = 78;
+ if (cellcurrent > 3){
+  turnOn(relayPin);
+ }
+}
 
+void cell_balancing()
+{
+  //cell balancing
 }
 
 void setup()
