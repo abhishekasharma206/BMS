@@ -4,9 +4,9 @@
 #include <ArduinoSTL.h>
 
 //select line multiplexer variables
-vector<int> select_line_pins = { 75, 74, 73, 72 };
-const int current_function_output = 89;	//Pin number for current sensing
-const int temp_function_output = 84;	//Pin number for temperature sensing
+vector<int> select_line_pins = {25, 26, 27, 28}; //{ 75, 74, 73, 72 };
+const int current_function_output = A8;	//Pin number(89) for current sensing
+const int temp_function_output = A13;	//Pin number(84) for temperature sensing
 
 //voltage sensing variable
 Vector<Pair<double, int>> voltages;
@@ -42,7 +42,7 @@ void select_Multiplexer_Pin(byte pin)
 double total_current_sensing()
 {
 	// senses the overall current of the battery pack
-	int adcVoltagepin = 88;
+	int adcVoltage_pin = A9; //88
 	double adcValue = analogRead(adcVoltage_pin);
 	cellcurrent = (adcValue / 1024.0) *5000;	//converts digital value to mV
 	return ((cellcurrent - offsetVoltage) / sensetivity);	//returns the current sensed
@@ -51,14 +51,14 @@ double total_current_sensing()
 double total_voltage_sensing()
 {
 	// senses the overall voltage of the battery pack
-	int totvolpin = 94;
+	int totvolpin = A3; //94
 	double totalVol = (analogRead(totvolpin)) *(5 / 1024);
 	return totalVol;
 }
 
 void Temperature_sense()
 {
-	for (int tempPin = 0; tempPin < total_cells;tempPin++)
+	for (int tempPin = 0; tempPin < total_cells; tempPin++)
 {
 	select_Multiplexer_Pin(tempPin);
 	delay(5);
@@ -93,7 +93,7 @@ void voltage_sensing()
 {
 	// sensing voltage of each cell
 
-	for (int pin = 97; pin > 97 - series_cells; pin--)
+	for (int pin = A0; pin< (A0 + series_cells); pin++)//(int pin = 97; pin > 97 - series_cells; pin--)
 	{
 		volt_measurement m(analogRead(pin) *(5 / 1024), pin);
 		voltages.push_back(m);
@@ -129,7 +129,7 @@ bool direction_of_flow_of_current()
 void Thermal_management()
 {
 	// opens the relay contacts if the temperature is not within the permissible limits
-	int pinout = 78;
+	int pinout = 22; //78
 	bool charge = direction_of_flow_of_current();
 	for (int i = 0; i < series_cells; i++)
 	{
@@ -160,7 +160,7 @@ void over_current()
 {
 	//Over Current protection
  cellcurrent = total_current_sensing();
- relayPin = 78;
+ relayPin = 22; //78;
  if (cellcurrent > 3){
   turnOn(relayPin);
  }
