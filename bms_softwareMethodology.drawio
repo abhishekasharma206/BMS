@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2021-06-04T12:13:41.606Z" agent="5.0 (Windows)" etag="KWe5WJ0Xmxw2ubN-MpKz" version="14.7.4" type="github">
+<mxfile host="app.diagrams.net" modified="2021-06-04T12:25:43.136Z" agent="5.0 (Windows)" etag="272fuSrCLJ7diyhOJ0Qq" version="14.7.4" type="github">
   <diagram id="ZQuKfv0tQSPIokNDNCL0" name="Page-1">
     <mxGraphModel dx="1422" dy="791" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#283618" math="0" shadow="0">
       <root>
@@ -218,6 +218,14 @@
         </mxCell>
         <mxCell id="l6k71gGaqvxMgcNe-Q9w-35" value="STOP" style="ellipse;whiteSpace=wrap;html=1;rounded=1;fontColor=#FEFAE0;strokeColor=#DDA15E;strokeWidth=1;fillColor=#BC6C25;sketch=0;" vertex="1" parent="1">
           <mxGeometry x="990" y="100" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="l6k71gGaqvxMgcNe-Q9w-38" value="" style="edgeStyle=orthogonalEdgeStyle;curved=0;sketch=0;orthogonalLoop=1;jettySize=auto;html=1;fontColor=#FEFAE0;strokeColor=#DDA15E;fillColor=#BC6C25;" edge="1" parent="1" source="l6k71gGaqvxMgcNe-Q9w-37">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="390" y="375.25" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l6k71gGaqvxMgcNe-Q9w-37" value="" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws3.hardware_board;fillColor=#5294CF;gradientColor=none;rounded=1;sketch=0;fontColor=#FEFAE0;strokeColor=#990000;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="240" y="325" width="84" height="100.5" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
