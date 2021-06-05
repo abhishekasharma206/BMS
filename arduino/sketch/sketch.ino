@@ -96,7 +96,7 @@ void voltage_sensing()
 	for (int pin = A0; pin< (A0 + series_cells); pin++)//(int pin = 97; pin > 97 - series_cells; pin--)
 	{
 		volt_measurement m(analogRead(pin) *(5 / 1024), pin);
-		voltages.push_back(m);
+		volt_sense.push_back(m);
 	}
 }
 
@@ -166,9 +166,52 @@ void over_current()
  }
 }
 
+void PWM_Control(){
+  //Control of PWM for Cell Balancing
+  int myPretimer = 7;
+  TCCR0B &= ~myPretimer;
+  int myReqtimer = 4;
+  TCCR0B |= myReqtimer;
+  pinMode (13, OUTPUT);
+  pinMode (4, OUTPUT);
+}
+
 void cell_balancing()
 {
   //cell balancing
+  int cell_bal1 = 31;
+  int cell_bal2 = 32;
+  int cell_bal3 = 33;
+  int cell_bal4 = 34;
+  int cell_bal5 = 35;
+  int cell_bal6 = 36;
+  float duty_cycle = 0.25;
+  if ((volt_sense[0].val_1) > (volt_sense[1].val_1)) {
+    if ((volt_sense[1].val_1) > (volt_sense[2].val_1)) {
+      //3rd cell SOC is the smallest
+      PWM_Control();
+      digitalWrite (cell_bal6, HIGH);
+      digitalWrite (cell_bal3, HIGH);
+    }
+    else {
+      //2nd cell SOC is the smallest
+      PWM_Control();
+      digitalWrite (cell_bal5, HIGH);
+      digitalWrite (cell_bal2, HIGH);
+    }
+  }
+  else if ((volt_sense[1].val_1) > (volt_sense[2].val_1)) {
+    //3rd cell SOC is the smallest
+    PWM_Control();
+    digitalWrite (cell_bal6, HIGH);
+    digitalWrite (cell_bal3, HIGH);
+  }
+  else if ((volt_sense[3].val_1) > (volt_sense[1].val_1) {
+    //1st cell SOC is the smallest
+    PWM_Control();
+    digitalWrite (cell_bal1, HIGH);
+    digitalWrite (cell_bal4, HIGH);
+  }
 }
 
 void setup()
