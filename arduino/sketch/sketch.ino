@@ -96,7 +96,7 @@ void voltage_sensing()
 	for (int pin = A0; pin< (A0 + series_cells); pin++)//(int pin = 97; pin > 97 - series_cells; pin--)
 	{
 		volt_measurement m(analogRead(pin) *(5 / 1024), pin);
-		voltages.push_back(m);
+		volt_sense.push_back(m);
 	}
 }
 
@@ -169,6 +169,41 @@ void over_current()
 void cell_balancing()
 {
   //cell balancing
+  int cell_bal1 = 4;
+  int cell_bal2 = 31;
+  int cell_bal3 = 32;
+  int cell_bal4 = 33;
+  int cell_bal5 = 34;
+  int cell_bal6 = 35;
+  int cell_bal7 = 36;
+  int cell_bal8 = 13;
+  float duty_cycle = 0.25;
+  if ((volt_sense[0].val_1) > (volt_sense[1].val_1)) {
+    if ((volt_sense[1].val_1) > (volt_sense[2].val_1)) {
+      digitalWrite (cell_bal7, HIGH);
+      digitalWrite (cell_bal4, HIGH);
+      digitalWrite (cell_bal8, HIGH);
+      digitalWrite (cell_bal1, HIGH);
+    }
+    else {
+      digitalWrite (cell_bal6, HIGH);
+      digitalWrite (cell_bal3, HIGH);
+      digitalWrite (cell_bal8, HIGH);
+      digitalWrite (cell_bal1, HIGH);
+    }
+  }
+  else if ((volt_sense[2].val_1) > (volt_sense[3].val_1)) {
+    digitalWrite (cell_bal7, HIGH);
+    digitalWrite (cell_bal4, HIGH);
+    digitalWrite (cell_bal8, HIGH);
+    digitalWrite (cell_bal1, HIGH);
+  }
+  else if ((volt_sense[3].val_1) > (volt_sense[1].val_1) {
+    digitalWrite (cell_bal2, HIGH);
+    digitalWrite (cell_bal5, HIGH);
+    digitalWrite (cell_bal8, HIGH);
+    digitalWrite (cell_bal1, HIGH);
+  }
 }
 
 void setup()
