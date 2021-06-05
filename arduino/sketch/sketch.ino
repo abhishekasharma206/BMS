@@ -188,22 +188,26 @@ void cell_balancing()
   float duty_cycle = 0.25;
   if ((volt_sense[0].val_1) > (volt_sense[1].val_1)) {
     if ((volt_sense[1].val_1) > (volt_sense[2].val_1)) {
+      //3rd cell SOC is the smallest
       PWM_Control();
       digitalWrite (cell_bal6, HIGH);
       digitalWrite (cell_bal3, HIGH);
     }
     else {
+      //2nd cell SOC is the smallest
       PWM_Control();
       digitalWrite (cell_bal5, HIGH);
       digitalWrite (cell_bal2, HIGH);
     }
   }
-  else if ((volt_sense[2].val_1) > (volt_sense[3].val_1)) {
+  else if ((volt_sense[1].val_1) > (volt_sense[2].val_1)) {
+    //3rd cell SOC is the smallest
     PWM_Control();
     digitalWrite (cell_bal6, HIGH);
     digitalWrite (cell_bal3, HIGH);
   }
   else if ((volt_sense[3].val_1) > (volt_sense[1].val_1) {
+    //1st cell SOC is the smallest
     PWM_Control();
     digitalWrite (cell_bal1, HIGH);
     digitalWrite (cell_bal4, HIGH);
