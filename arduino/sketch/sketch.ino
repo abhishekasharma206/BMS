@@ -159,58 +159,58 @@ void Thermal_management()
 void over_current()
 {
 	//Over Current protection
- cellcurrent = total_current_sensing();
- relayPin = 22; //78;
- if (cellcurrent > 3){
+  cellcurrent = total_current_sensing();
+  relayPin = 22; //78;
+  if (cellcurrent > 3){
   turnOn(relayPin);
  }
-}
-
-void PWM_Control(){
-  //Control of PWM for Cell Balancing
-  int myPretimer = 7;
-  TCCR0B &= ~myPretimer;
-  int myReqtimer = 4;
-  TCCR0B |= myReqtimer;
-  pinMode (13, OUTPUT);
-  pinMode (4, OUTPUT);
 }
 
 void cell_balancing()
 {
   //cell balancing
+  int cell_bal0 = 13;
   int cell_bal1 = 31;
   int cell_bal2 = 32;
   int cell_bal3 = 33;
   int cell_bal4 = 34;
   int cell_bal5 = 35;
   int cell_bal6 = 36;
-  float duty_cycle = 0.25;
-  if ((volt_sense[0].val_1) > (volt_sense[1].val_1)) {
-    if ((volt_sense[1].val_1) > (volt_sense[2].val_1)) {
+  int cell_bal7 = 4;
+  if ((volt_sense[0].val_1) == (volt_sense[1].val_1) && (volt_sense[1].val_1) > (volt_sense[2].val_1)) {
+    //do nothing
+  }
+  else {
+    if ((volt_sense[0].val_1) >= (volt_sense[1].val_1)) {
+     if ((volt_sense[1].val_1) >= (volt_sense[2].val_1)) {
       //3rd cell SOC is the smallest
-      PWM_Control();
+      analogWrite (cell_bal0, 64);
+      analogWrite (cell_bal7, 64);
       digitalWrite (cell_bal6, HIGH);
       digitalWrite (cell_bal3, HIGH);
-    }
+     }
     else {
       //2nd cell SOC is the smallest
-      PWM_Control();
+      analogWrite (cell_bal0, 64);
+      analogWrite (cell_bal7, 64);
       digitalWrite (cell_bal5, HIGH);
       digitalWrite (cell_bal2, HIGH);
-    }
+     }
   }
-  else if ((volt_sense[1].val_1) > (volt_sense[2].val_1)) {
+   else if ((volt_sense[1].val_1) >= (volt_sense[2].val_1)) {
     //3rd cell SOC is the smallest
-    PWM_Control();
+    analogWrite (cell_bal0, 64);
+    analogWrite (cell_bal7, 64);
     digitalWrite (cell_bal6, HIGH);
     digitalWrite (cell_bal3, HIGH);
-  }
-  else if ((volt_sense[3].val_1) > (volt_sense[1].val_1) {
+   }
+   else if ((volt_sense[3].val_1) >= (volt_sense[1].val_1) {
     //1st cell SOC is the smallest
-    PWM_Control();
+    analogWrite (cell_bal0, 64);
+    analogWrite (cell_bal7, 64);
     digitalWrite (cell_bal1, HIGH);
     digitalWrite (cell_bal4, HIGH);
+   }
   }
 }
 
@@ -227,6 +227,14 @@ void setup()
 	pinMode(current_function_output, INPUT);
 	pinMode(temp_function_output, INPUT);
 
+ //Control of PWM for Cell Balancing
+  int myPretimer = 7;
+  TCCR0B &= ~myPretimer;
+  int myReqtimer = 4;
+  TCCR0B |= myReqtimer;
+  pinMode (13, OUTPUT);
+  pinMode (4, OUTPUT);
+
 }
 
 void loop()
@@ -239,6 +247,6 @@ void loop()
 	Temperature_sense();
 	Thermal_management();
 	over_current();
+  direction_of_flow_of_current();
 	cell_balancing();
-	direction_of_flow_of_current();
 }
