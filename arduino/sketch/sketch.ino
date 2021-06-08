@@ -4,7 +4,8 @@
 #include <ArduinoSTL.h>
 
 //select line multiplexer variables
-vector<int> select_line_pins = {25, 26, 27, 28}; //{ 75, 74, 73, 72 };
+Vector<int> select_line_pins; //{25, 26, 27, 28};       //{ 75, 74, 73, 72 }
+
 const int current_function_output = A8;	//Pin number(89) for current sensing
 const int temp_function_output = A13;	//Pin number(84) for temperature sensing
 
@@ -30,7 +31,7 @@ typedef Pair<double, int> temp_measurement;
 void select_Multiplexer_Pin(byte pin)
 {
 	if (pin > total_cells) return;	// Exit the function if it is out of bound
-	for (auto i = 0; i < select_line_pins.size(); i++)
+	for (auto i = 0; i < sizeof(select_line_pins); i++)
 	{
 		if (pin &(1 << i))   //shifting the bits to activate the specific select lines
 			turnOn(select_line_pins[i]);  //digitalWrite(select_line_pins[i], HIGH)
@@ -44,7 +45,7 @@ double total_current_sensing()
 	// senses the overall current of the battery pack
 	int adcVoltage_pin = A9; //88
 	double adcValue = analogRead(adcVoltage_pin);
-	cellcurrent = (adcValue / 1024.0) *5000;	//converts digital value to mV
+	double cellcurrent = (adcValue / 1024.0) *5000;	//converts digital value to mV
 	return ((cellcurrent - offsetVoltage) / sensetivity);	//returns the current sensed
 }
 
@@ -63,7 +64,7 @@ void Temperature_sense()
 	select_Multiplexer_Pin(tempPin);
 	delay(5);
 	temp_measurement m(analogRead(temp_function_output) *0.48828125, tempPin);
-	temp_sense.push_back(m);	// read analog volt from sensor and save to vector temp_sense
+	voltages.push_back(m);	// read analog volt from sensor and save to vector temp_sense
 }	// convert the analog volt to its temperature equivalent  
 }	// for LM35 IC we have to multiply temperature with 0.48828125
 /*LM35 sensor has three terminals - Vs, Vout and GND. We will connect the sensor as follows −
@@ -84,7 +85,7 @@ void current_sensing()
 		delay(5);
 		raw_voltage = (analogRead(current_function_output) / 1024.0) *5000;	//converts digital value to mV
 		voltage = ((raw_voltage - offsetVoltage) / sensetivity);	//stores the current sensed in vector
-		current_measurement c(voltage, cur_pin);
+		current_measurement c(voltage, cur_Pin);
 		current_sense.push_back(c);
 	}
 }
@@ -96,7 +97,7 @@ void voltage_sensing()
 	for (int pin = A0; pin< (A0 + series_cells); pin++)//(int pin = 97; pin > 97 - series_cells; pin--)
 	{
 		volt_measurement m(analogRead(pin) *(5 / 1024), pin);
-		volt_sense.push_back(m);
+		voltages.push_back(m);
 	}
 }
 
@@ -160,7 +161,7 @@ void over_current()
 {
 	//Over Current protection
   double cellcurrent = total_current_sensing();
-  relayPin = 22; //78;
+  int relayPin = 22; //78;
   if (cellcurrent > 3.000){
   turnOn(relayPin);
  }
@@ -177,12 +178,12 @@ bool cell_balancing()
   int cell_bal5 = 35;
   int cell_bal6 = 36;
   int cell_bal7 = 4;
-  if ((volt_sense[0].val_1) == (volt_sense[1].val_1) && (volt_sense[1].val_1) == (volt_sense[2].val_1)) {
+  if ((voltages[0].val_1) == (voltages[1].val_1) && (voltages[1].val_1) == (voltages[2].val_1)) {
     return true;  // do nothing
   }
   else {
-    if ((volt_sense[0].val_1) >= (volt_sense[1].val_1)) {
-     if ((volt_sense[1].val_1) >= (volt_sense[2].val_1)) {
+    if ((voltages[0].val_1) >= (voltages[1].val_1)) {
+     if ((voltages[1].val_1) >= (voltages[2].val_1)) {
       //3rd cell SOC is the smallest
       analogWrite (cell_bal0, 64);
       analogWrite (cell_bal7, 64);
@@ -197,36 +198,41 @@ bool cell_balancing()
       digitalWrite (cell_bal2, HIGH);
      }
   }
-   else if ((volt_sense[1].val_1) >= (volt_sense[2].val_1)) {
+   else if ((voltages[1].val_1) >= (voltages[2].val_1)) {
     //3rd cell SOC is the smallest
     analogWrite (cell_bal0, 64);
     analogWrite (cell_bal7, 64);
     digitalWrite (cell_bal6, HIGH);
     digitalWrite (cell_bal3, HIGH);
    }
-   else if ((volt_sense[3].val_1) >= (volt_sense[1].val_1) {
+   else if ((voltages[3].val_1) >= (voltages[1].val_1)) {
     //1st cell SOC is the smallest
     analogWrite (cell_bal0, 64);
     analogWrite (cell_bal7, 64);
     digitalWrite (cell_bal1, HIGH);
     digitalWrite (cell_bal4, HIGH);
    }
-  }
   delay(5);
-  if(volt_sense[0].val_1 == volt_sense[1].val_1 && volt_sense[1].val_1 == volt_sense[2].val)
+  if(voltages[0].val_1 == voltages[1].val_1 && voltages[1].val_1 == voltages[2].val_1)
   return true;
 
+
+}
   return false;
 }
 
 void setup()
 {
 	Serial.begin(9600);
+ select_line_pins.push_back(25);
+select_line_pins.push_back(26);
+select_line_pins.push_back(27);
+select_line_pins.push_back(28);
 
 	for (auto i = 0; i < select_line_pins.size(); i++)
 	{
 		pinMode(select_line_pins[i], OUTPUT);
-		turnOff(select_line_pins[i];  //digitalWrite(select_line_pins[i]
+		turnOff(select_line_pins[i]);  //digitalWrite(select_line_pins[i]
 	}
 
 	pinMode(current_function_output, INPUT);
