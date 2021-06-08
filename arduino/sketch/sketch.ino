@@ -116,7 +116,7 @@ void turnOff(int relayPin)
 bool direction_of_flow_of_current()
 {
 	double current = total_current_sensing();
-	if (current > 0)
+	if (current > 0.00)
 	{
 		return 1;
 	}
@@ -159,14 +159,14 @@ void Thermal_management()
 void over_current()
 {
 	//Over Current protection
-  cellcurrent = total_current_sensing();
+  double cellcurrent = total_current_sensing();
   relayPin = 22; //78;
-  if (cellcurrent > 3){
+  if (cellcurrent > 3.000){
   turnOn(relayPin);
  }
 }
 
-void cell_balancing()
+bool cell_balancing()
 {
   //cell balancing
   int cell_bal0 = 13;
@@ -177,8 +177,8 @@ void cell_balancing()
   int cell_bal5 = 35;
   int cell_bal6 = 36;
   int cell_bal7 = 4;
-  if ((volt_sense[0].val_1) == (volt_sense[1].val_1) && (volt_sense[1].val_1) > (volt_sense[2].val_1)) {
-    //do nothing
+  if ((volt_sense[0].val_1) == (volt_sense[1].val_1) && (volt_sense[1].val_1) == (volt_sense[2].val_1)) {
+    return true;  // do nothing
   }
   else {
     if ((volt_sense[0].val_1) >= (volt_sense[1].val_1)) {
@@ -212,6 +212,11 @@ void cell_balancing()
     digitalWrite (cell_bal4, HIGH);
    }
   }
+  delay(5);
+  if(volt_sense[0].val_1 == volt_sense[1].val_1 && volt_sense[1].val_1 == volt_sense[2].val)
+  return true;
+
+  return false;
 }
 
 void setup()
@@ -239,14 +244,18 @@ void setup()
 
 void loop()
 {
+  bool balance = false;
 	// put your main code here, to run repeatedly:
 	voltage_sensing();
+  total_voltage_sensing();
 	current_sensing();
 	total_current_sensing();
-	total_voltage_sensing();
 	Temperature_sense();
 	Thermal_management();
 	over_current();
   direction_of_flow_of_current();
-	cell_balancing();
+  while(balance == false){
+	balance = cell_balancing();
+  }
+ delay(50);
 }
