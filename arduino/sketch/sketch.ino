@@ -32,10 +32,10 @@ void select_Multiplexer_Pin(byte pin)
 	if (pin > total_cells) return;	// Exit the function if it is out of bound
 	for (auto i = 0; i < select_line_pins.size(); i++)
 	{
-		if (pin &(1 << i))
-			digitalWrite(select_line_pins[i], HIGH);
+		if (pin &(1 << i))   //shifting the bits to activate the specific select lines
+			turnOn(select_line_pins[i]);  //digitalWrite(select_line_pins[i], HIGH)
 		else
-			digitalWrite(select_line_pins[i], LOW);
+			turnOff(select_line_pins[i]);  //digitalWrite(select_line_pins[i], LOW)
 	}
 }
 
@@ -136,16 +136,16 @@ void Thermal_management()
 		if (charge == true)
 		{
 			if ((temp_sense[i].val_1) <= 0.000 || (temp_sense[i].val_1) >= 45.000)
-				digitalWrite(pinout, HIGH);	// turnOn(pinout)
+				 turnOn(pinout);  //digitalWrite(pinout, HIGH) 
 			else
-				digitalWrite(pinout, LOW);	//turnoff(pinout)
+				turnOff(pinout);  //digitalWrite(pinout, LOW)
 		}
 		else
 		{
 			if ((temp_sense[i].val_1) <= 0.000 || (temp_sense[i].val_1) >= 55.000)
-				digitalWrite(pinout, HIGH);	//turnOn(pinout)
+				turnOn(pinout);  // digitalWrite(pinout, HIGH)
 			else
-				digitalWrite(pinout, LOW);	//turnoff(pinout)
+				turnOff(pinout);  //digitalWrite(pinout, LOW)
 		}
 	}
 }
@@ -221,7 +221,7 @@ void setup()
 	for (auto i = 0; i < select_line_pins.size(); i++)
 	{
 		pinMode(select_line_pins[i], OUTPUT);
-		digitalWrite(select_line_pins[i], LOW);
+		turnOff(select_line_pins[i];  //digitalWrite(select_line_pins[i]
 	}
 
 	pinMode(current_function_output, INPUT);
@@ -229,7 +229,7 @@ void setup()
 
  //Control of PWM for Cell Balancing
   int myPretimer = 7;
-  TCCR0B &= ~myPretimer;
+  TCCR0B &= ~myPretimer;           
   int myReqtimer = 4;
   TCCR0B |= myReqtimer;
   pinMode (13, OUTPUT);
