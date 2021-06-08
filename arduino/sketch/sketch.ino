@@ -1,7 +1,7 @@
 #include <Vector.h>
 #include <Pair.h>
 #include <Arduino.h>
-#include <ArduinoSTL.h>
+//#include <ArduinoSTL.h>
 
 //select line multiplexer variables
 Vector<int> select_line_pins; //{25, 26, 27, 28};       //{ 75, 74, 73, 72 }
@@ -31,7 +31,7 @@ typedef Pair<double, int> temp_measurement;
 void select_Multiplexer_Pin(byte pin)
 {
 	if (pin > total_cells) return;	// Exit the function if it is out of bound
-	for (auto i = 0; i < sizeof(select_line_pins); i++)
+	for (auto i = 0; i < select_line_pins.size(); i++)
 	{
 		if (pin &(1 << i))   //shifting the bits to activate the specific select lines
 			turnOn(select_line_pins[i]);  //digitalWrite(select_line_pins[i], HIGH)
@@ -64,7 +64,7 @@ void Temperature_sense()
 	select_Multiplexer_Pin(tempPin);
 	delay(5);
 	temp_measurement m(analogRead(temp_function_output) *0.48828125, tempPin);
-	voltages.push_back(m);	// read analog volt from sensor and save to vector temp_sense
+	temp_sense.push_back(m);	// read analog volt from sensor and save to vector temp_sense
 }	// convert the analog volt to its temperature equivalent  
 }	// for LM35 IC we have to multiply temperature with 0.48828125
 /*LM35 sensor has three terminals - Vs, Vout and GND. We will connect the sensor as follows −
