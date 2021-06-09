@@ -223,8 +223,8 @@ bool cell_balancing()
 
 void setup()
 {
-	Serial.begin(9600);
- select_line_pins.push_back(25);
+Serial.begin(9600);
+select_line_pins.push_back(25);
 select_line_pins.push_back(26);
 select_line_pins.push_back(27);
 select_line_pins.push_back(28);
